@@ -17,6 +17,8 @@ android {
 }
 
 dependencies {
-//    implementation project(":base-wa-library")
+    implementation 'androidx.appcompat:appcompat:1.1.0'
     kapt "androidx.room:room-compiler:2.2.3"
+    testImplementation 'junit:junit:4.12'
+    implementation(Android.constraintlayout)
 }

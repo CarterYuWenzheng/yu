@@ -7,6 +7,7 @@ object Android {
     const val appcompat         = "androidx.appcompat:appcompat:1.2.0"
     const val coreKtx           = "androidx.core:core-ktx:1.3.1"
     const val constraintlayout  = "androidx.constraintlayout:constraintlayout:1.1.3"
+    const val constraintlayoutcompose  = "androidx.constraintlayout:constraintlayout-compose:1.0.0-alpha06"
     const val legacy            = "androidx.legacy:legacy-support-v4:1.0.0"
     const val paging            = "androidx.paging:paging-runtime:2.1.2"
     const val viewpager2        = "androidx.viewpager2:viewpager2:1.1.0-alpha01"
