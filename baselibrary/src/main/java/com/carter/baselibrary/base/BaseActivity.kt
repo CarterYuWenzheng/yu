@@ -18,13 +18,13 @@ abstract class BaseActivity : AppCompatActivity() {
         setSystemInvadeBlack()
         initViewModel()
         initObserver()
-        init(savedInstanceState)
+        initBase(savedInstanceState)
     }
 
     /**
      * 入口
      */
-    abstract fun init(savedInstanceState: Bundle?)
+    abstract fun initBase(savedInstanceState: Bundle?)
 
     /**
      * 获取布局

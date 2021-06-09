@@ -21,4 +21,5 @@ dependencies {
     kapt "androidx.room:room-compiler:2.2.3"
     testImplementation 'junit:junit:4.12'
     implementation(Android.constraintlayout)
+    implementation(project(":baselibrary"))
 }

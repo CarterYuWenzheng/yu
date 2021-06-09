@@ -12,6 +12,8 @@ import org.junit.Assert.*
 class ExampleUnitTest {
     @Test
     fun addition_isCorrect() {
-        assertEquals(4, 2 + 2)
+        for (i in 1..300) {
+            println("<dimen name=\"dp_$i\">"+i+"dp</dimen>")
+        }
     }
 }
