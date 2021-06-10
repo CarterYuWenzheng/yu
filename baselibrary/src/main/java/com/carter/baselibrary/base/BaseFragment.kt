@@ -63,7 +63,7 @@ abstract class BaseFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        init(savedInstanceState)
+        initBase(savedInstanceState)
         //observer在init后，observer会收到粘性事件，对UI处理
         initObserver()
         initOnClick()
@@ -73,7 +73,7 @@ abstract class BaseFragment : Fragment() {
 
     open fun initData() {}
 
-    abstract fun init(savedInstanceState: Bundle?)
+    abstract fun initBase(savedInstanceState: Bundle?)
 
     abstract fun getLayoutId(): Int?
 
