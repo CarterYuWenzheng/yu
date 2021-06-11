@@ -29,7 +29,7 @@ abstract class BaseActivity : AppCompatActivity() {
     /**
      * 获取布局
      */
-    abstract fun getLayout() : Int?
+    abstract fun getLayout() : Int
 
     /**
      * 状态栏颜色

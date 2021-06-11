@@ -1,4 +1,6 @@
 package com.carter.yu
 
-class PlayViewModel {
+import androidx.lifecycle.ViewModel
+
+class PlayViewModel:ViewModel() {
 }

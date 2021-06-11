@@ -1,9 +1,6 @@
-package com.zs.zs_jetpack.constants
+package com.carter.yu.constants
 /**
- * des 存储常量
- *
- * @author zs
- * @date 2020-05-09
+ * 存储常量
  */
 object Constants {
     const val DEFAULT_TIMEOUT = 10000

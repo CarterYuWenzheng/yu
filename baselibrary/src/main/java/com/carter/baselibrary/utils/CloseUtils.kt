@@ -1,12 +1,10 @@
-package com.zs.base_library.utils
+package com.carter.baselibrary.utils
 
 import java.io.Closeable
 import java.io.IOException
 
 /**
- * des 关闭io工具类
- * @author zs
- * @date 2020-03-09
+ * 关闭io工具类
  */
 class CloseUtils private constructor() {
     init {
