@@ -1,12 +1,13 @@
 package com.carter.yu
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import com.carter.baselibrary.utils.SPUtils
 import com.carter.baselibrary.utils.StatusUtils
 import com.carter.yu.base.BaseLoadingActivity
 import com.carter.yu.constants.Constants
+import com.carter.yu.play.PlayerManager
 import com.carter.yu.ui.MainFragment
 
 /**
@@ -32,14 +33,28 @@ class MainActivity : BaseLoadingActivity() {
     }
 
     override fun init(savedInstanceState: Bundle?) {
-        TODO("PlayManager")
+        PlayerManager.instance.playLiveData.audioLiveData.observe(this, Observer {
+            playVM?.setAudioBean(it)
+        })
+        PlayerManager.instance.playLiveData.playStatusLiveData.observe(this, Observer {
+            playVM?.playStatus?.set(it)
+        })
+        PlayerManager.instance.playLiveData.progressLiveData.observe(this, Observer {
+            playVM?.setProgress(it)
+        })
+        PlayerManager.instance.playLiveData.playModeLiveData.observe(this, Observer {
+            playVM?.setPlayMode(it)
+        })
+        PlayerManager.instance.playLiveData.resetLiveData.observe(this, Observer {
+            playVM?.reset()
+        })
     }
 
     /**
      * 动态切换主题
      */
     private fun changeTheme() {
-        val theme = SPUtils.getBoolean(Constants.SP_THEME_KEY,false)
+        val theme = SPUtils.getBoolean(Constants.SP_THEME_KEY, false)
         if (theme) {
             setTheme(R.style.AppTheme_Night)
         } else {
@@ -51,11 +66,11 @@ class MainActivity : BaseLoadingActivity() {
      * 随主题修改沉浸式状态
      */
     override fun setSystemInvadeBlack() {
-        val theme = SPUtils.getBoolean(Constants.SP_THEME_KEY,false)
+        val theme = SPUtils.getBoolean(Constants.SP_THEME_KEY, false)
         if (theme) {
-            StatusUtils.setSystemStatus(this,true,false)
+            StatusUtils.setSystemStatus(this, true, false)
         } else {
-            StatusUtils.setSystemStatus(this,true,true)
+            StatusUtils.setSystemStatus(this, true, true)
         }
     }
 
@@ -63,7 +78,8 @@ class MainActivity : BaseLoadingActivity() {
      * 返回键
      */
     override fun onBackPressed() {
-        val mainHostFragment:Fragment? = supportFragmentManager.findFragmentById(R.id.host_fragment)
+        val mainHostFragment: Fragment? =
+            supportFragmentManager.findFragmentById(R.id.host_fragment)
         val fragment = mainHostFragment?.childFragmentManager?.primaryNavigationFragment
         if (fragment is MainFragment) {
             //退出Activity但不销毁
