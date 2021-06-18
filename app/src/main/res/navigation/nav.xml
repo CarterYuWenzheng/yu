@@ -5,4 +5,11 @@
     app:startDestination="@id/main_fragment"
     tools:ignore="UnusedNavigation">
 
+    <fragment
+        android:id="@+id/main_fragment"
+        android:name="com.carter.yu.ui.MainFragment"
+        android:label="MainFragment"
+        tools:layout="@layout/fragment_main">
+
+    </fragment>
 </navigation>
