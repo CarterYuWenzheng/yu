@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="vm"
             type="com.carter.yu.PlayViewModel" />
@@ -15,20 +16,37 @@
         android:background="?attr/main_bg_1"
         android:fitsSystemWindows="true"
         tools:context=".ui.MainFragment">
+
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/vpHome"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:overScrollMode="never"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/btnNav"/>
+            app:layout_constraintBottom_toTopOf="@id/btnNav"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/btnNav"
             android:layout_width="match_parent"
             android:layout_height="58dp"
             android:background="?attr/main_bg_1"
+            app:itemIconTint="@drawable/selector_bottom_navigation_item"
+            app:itemTextColor="@drawable/selector_bottom_navigation_item"
             app:labelVisibilityMode="labeled"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:menu="@menu/main_bottom_navigation" />
+
+        <com.carter.yu.view.FloatPlayLayout
+            android:id="@+id/floatLayout"
+            floatImgAlbum="@{vm.albumPic}"
+            floatImgPlay="@{vm.playStatus}"
+            floatSongName="@{vm.songName}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/padding"
+            android:layout_marginBottom="50dp"
+            app:layout_constraintBottom_toTopOf="@+id/btnNav"
+            app:layout_constraintRight_toRightOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
