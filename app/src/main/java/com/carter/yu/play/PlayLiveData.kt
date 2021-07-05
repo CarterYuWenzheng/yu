@@ -2,7 +2,7 @@ package com.carter.yu.play
 
 import androidx.lifecycle.MutableLiveData
 import com.carter.yu.play.bean.AudioBean
-import com.zs.zs_jetpack.play.bean.ProgressBean
+import com.carter.yu.play.bean.ProgressBean
 
 /**
  * des用于分发、存储音乐状态的LiveData

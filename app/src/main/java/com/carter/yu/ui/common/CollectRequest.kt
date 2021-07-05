@@ -4,10 +4,8 @@ import androidx.lifecycle.MutableLiveData
 import com.carter.yu.bean.ArticleListBean
 
 /**
- * des 收藏／取消收藏。单独抽成request可提升复用性
+ * 收藏／取消收藏。单独抽成request可提升复用性
  * @param listLiveData 文章liveData，收藏成功后直接更新
- * author zs
- * date 2021/4/25
  */
 class CollectRequest(private val listLiveData: MutableLiveData<MutableList<ArticleListBean>>) {
 

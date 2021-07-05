@@ -2,59 +2,93 @@ package com.carter.yu.ui.main.tab
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import androidx.lifecycle.Observer
+import com.carter.baselibrary.base.DataBindingConfig
+import com.carter.baselibrary.common.initFragment
+import com.carter.yu.BR
 import com.carter.yu.R
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+import com.carter.yu.base.LazyFragment
+import com.carter.yu.common.TabNavigatorAdapter
+import com.carter.yu.view.MagicIndicatorUtils
+import kotlinx.android.synthetic.main.fragment_tab.*
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.CommonNavigator
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNavigatorAdapter
 
 /**
- * A simple [Fragment] subclass.
- * Use the [TabFragment.newInstance] factory method to
- * create an instance of this fragment.
+ * 项目 & 公众号 公用
  */
-class TabFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+class TabFragment : LazyFragment() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+    /**
+     * fragment类型
+     */
+    private var type = 0
+
+    private var tabViewModel: TabViewModel? = null
+
+    override fun lazyInit() {
+        arguments?.apply {
+            type = getInt("type")
+        }
+        loadData()
+    }
+
+    override fun initViewModel() {
+        tabViewModel = getFragmentViewModel(TabViewModel::class.java)
+    }
+
+    override fun initObserver() {
+        tabViewModel?.tabLiveData?.observe(this, Observer {
+            initViewPager(it)
+        })
+    }
+
+    private fun initViewPager(tabList: MutableList<TabBean>) {
+        vpArticleFragment.initFragment(childFragmentManager, arrayListOf<Fragment>().apply {
+            tabList.forEach {
+                add(ArticleListFragment().apply {
+                    //想各个fragment传递信息
+                    val bundle = Bundle()
+                    bundle.putInt("type", type)
+                    bundle.putInt("tabId", it.id)
+                    bundle.putString("name", it.name)
+                    arguments = bundle
+                })
+            }
+        })
+        //下划线绑定
+        val commonNavigator = CommonNavigator(mActivity)
+        commonNavigator.adapter = getCommonNavigatorAdapter(tabList)
+        tabLayout.navigator = commonNavigator
+        MagicIndicatorUtils.bindForViewPager(vpArticleFragment, tabLayout)
+    }
+
+    /**
+     * 获取下划线根跟字适配器
+     */
+    private fun getCommonNavigatorAdapter(tabList: MutableList<TabBean>): CommonNavigatorAdapter {
+        return TabNavigatorAdapter(mutableListOf<String>().apply {
+            //将tab转换为String
+            tabList.forEach {
+                it.name?.let { it1 -> add(it1) }
+            }
+        }) {
+            vpArticleFragment.currentItem = it
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_tab, container, false)
+    override fun getLayoutId(): Int {
+        return R.layout.fragment_tab
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment TabFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            TabFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    override fun getDataBindingConfig(): DataBindingConfig? {
+        return DataBindingConfig(R.layout.fragment_tab, tabViewModel).addBindingParam(
+            BR.vm,
+            tabViewModel
+        )
+    }
+
+    private fun loadData() {
+        tabViewModel?.tabLiveData
     }
 }

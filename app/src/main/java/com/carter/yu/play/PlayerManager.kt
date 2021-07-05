@@ -5,19 +5,17 @@ import com.carter.baselibrary.play.IPlayer
 import com.carter.baselibrary.play.IPlayerStatus
 import com.carter.baselibrary.play.MediaPlayerHelper
 import com.carter.yu.play.bean.AudioBean
-import com.zs.zs_jetpack.play.bean.ProgressBean
+import com.carter.yu.play.bean.ProgressBean
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import java.util.concurrent.TimeUnit
 
 /**
- * des 音频管理
+ * 音频管理
  *     通过单例模式实现,托管音频状态与信息,并且作为唯一的可信源
  *     通过观察者模式统一对状态进行分发
  *     实则是一个代理,将目标对象Player与调用者隔离,并且在内部管理观察者
- * @author zs
- * @data 2020/6/25
  */
 class PlayerManager private constructor() : IPlayerStatus {
 
@@ -73,6 +71,7 @@ class PlayerManager private constructor() : IPlayerStatus {
      * 播放状态，默认为重置
      */
     private var playStatus = RELEASE
+
     /**
      * 播放列表
      */
@@ -148,11 +147,11 @@ class PlayerManager private constructor() : IPlayerStatus {
      * 播放一个新的音频
      */
     fun play(audioBean: AudioBean?) {
-        if (audioBean == null){
+        if (audioBean == null) {
             //重置
             playerHelper.reset()
             sendResetToObserver()
-        }else{
+        } else {
             playStatus = START
             playList.setCurrentAudio(audioBean)
             audioBean.path?.let { playerHelper.play(it) }
@@ -245,7 +244,7 @@ class PlayerManager private constructor() : IPlayerStatus {
      */
     private fun sendProgressToObserver(duration: Int) {
         playList.currentAudio()?.duration?.let {
-            playLiveData.progressLiveData.value = ProgressBean(duration,it)
+            playLiveData.progressLiveData.value = ProgressBean(duration, it)
         }
     }
 

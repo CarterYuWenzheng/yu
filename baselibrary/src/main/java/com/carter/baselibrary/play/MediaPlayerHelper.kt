@@ -6,9 +6,7 @@ import android.util.Log
 import com.carter.baselibrary.utils.toast
 
 /**
- * des 基于MediaPlayer实现的音频播放
- * @author zs
- * @data 2020/6/25
+ * 基于MediaPlayer实现的音频播放
  */
 class MediaPlayerHelper : IPlayer,
     OnCompletionListener,

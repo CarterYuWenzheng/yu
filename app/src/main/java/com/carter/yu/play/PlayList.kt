@@ -12,11 +12,9 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 /**
- * des 播放列表
+ * 播放列表
  * 关于历史和收藏.. 当历史和收藏列表需要改变时,数据库和内存中列表(手动更新)同时更新,UI与内存列表保持一致
  * 这样做的意图是避免每次操作历史/收藏列表时频繁读取数据库做数据同步
- * @author zs
- * @data 2020/6/25
  */
 class PlayList private constructor() {
 

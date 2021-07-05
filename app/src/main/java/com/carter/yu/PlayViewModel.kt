@@ -8,7 +8,7 @@ import com.carter.yu.db.AppDataBase
 import com.carter.yu.play.PlayList
 import com.carter.yu.play.PlayerManager
 import com.carter.yu.play.bean.AudioBean
-import com.zs.zs_jetpack.play.bean.ProgressBean
+import com.carter.yu.play.bean.ProgressBean
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

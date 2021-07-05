@@ -30,7 +30,7 @@ class MainFragment : BaseFragment() {
      * 项目
      */
     private val projectFragment by lazy {
-        TabFragment.apply {
+        TabFragment().apply {
             arguments = Bundle().apply {
                 putInt("type", Constants.PROJECT_TYPE)
             }
@@ -46,7 +46,7 @@ class MainFragment : BaseFragment() {
      * 公众号
      */
     private val wxChatFragment by lazy {
-        TabFragment.apply {
+        TabFragment().apply {
             arguments = Bundle().apply {
                 putInt("type", Constants.ACCOUNT_TYPE)
             }

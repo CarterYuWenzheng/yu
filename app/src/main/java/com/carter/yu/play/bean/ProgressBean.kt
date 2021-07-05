@@ -1,9 +1,7 @@
-package com.zs.zs_jetpack.play.bean
+package com.carter.yu.play.bean
 
 /**
- * des 进度模型
- * author zs
- * date 2021/4/20
+ * 进度模型
  */
 data class ProgressBean(
     /**
