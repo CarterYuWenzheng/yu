@@ -25,8 +25,8 @@ object RetrofitFactory {
     private val builder: OkHttpClient.Builder
         get() {
             return OkHttpClient.Builder()
-                .readTimeout(Constants.DEFAULT_TIMEOUT.toLong(), TimeUnit.MICROSECONDS)
-                .connectTimeout(Constants.DEFAULT_TIMEOUT.toLong(), TimeUnit.MICROSECONDS)
+                .readTimeout(Constants.DEFAULT_TIMEOUT.toLong(), TimeUnit.MILLISECONDS)
+                .connectTimeout(Constants.DEFAULT_TIMEOUT.toLong(), TimeUnit.MILLISECONDS)
                 .addInterceptor(getLogInterceptor())
                 .cookieJar(getCookie())
                 .cache(getCache())

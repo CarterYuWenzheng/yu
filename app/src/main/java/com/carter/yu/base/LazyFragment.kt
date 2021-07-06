@@ -20,7 +20,7 @@ abstract class LazyFragment : BaseFragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        isLoaded = true
+        isLoaded = false
     }
 
     override fun initBase(savedInstanceState: Bundle?) {

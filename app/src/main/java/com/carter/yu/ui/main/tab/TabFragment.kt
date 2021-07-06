@@ -89,6 +89,6 @@ class TabFragment : LazyFragment() {
     }
 
     private fun loadData() {
-        tabViewModel?.tabLiveData
+        tabViewModel?.getTab(type)
     }
 }
