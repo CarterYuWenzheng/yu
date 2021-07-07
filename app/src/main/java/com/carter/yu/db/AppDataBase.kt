@@ -19,32 +19,36 @@ import com.carter.yu.ui.play.history.HistoryAudioDao
 )
 abstract class AppDataBase : RoomDatabase() {
 
+    /**
+     * 获取HistoryAudioDao
+     */
     abstract fun historyDao(): HistoryAudioDao
+
+    /**
+     * 获取CollectAudioBean
+     */
     abstract fun collectDao(): CollectAudioDao
 
-    companion object {
-        @Volatile
-        private var instance: AppDataBase? = null
 
-        fun getInstance(): AppDataBase {
-            return instance ?: synchronized(this) {
-                instance ?: buildDataBase(BaseApplication.getContext()).also {
-                    instance = it
-                }
+    companion object{
+        @Volatile
+        private var instance:AppDataBase? = null
+
+        fun getInstance():AppDataBase{
+            return instance?: synchronized(this){
+                instance?:buildDataBase(BaseApplication.getContext())
+                    .also {
+                        instance = it
+                    }
             }
         }
 
-        private fun buildDataBase(context: Context): AppDataBase {
-            return Room.databaseBuilder(context, AppDataBase::class.java, "yu_database")
-                .addCallback(object : RoomDatabase.Callback() {
+        private fun buildDataBase(context: Context):AppDataBase{
+            return Room
+                .databaseBuilder(context,AppDataBase::class.java,"jet-database")
+                .addCallback(object :RoomDatabase.Callback(){
                     override fun onCreate(db: SupportSQLiteDatabase) {
                         super.onCreate(db)
-                        toast("database onCreate")
-                    }
-
-                    override fun onOpen(db: SupportSQLiteDatabase) {
-                        super.onOpen(db)
-                        toast("database onOpen")
                     }
                 })
                 .build()

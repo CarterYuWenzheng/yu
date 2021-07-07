@@ -24,6 +24,7 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.navigation:navigation-fragment-ktx:2.2.2'
     implementation 'androidx.navigation:navigation-ui-ktx:2.2.2'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     kapt "androidx.room:room-compiler:2.2.3"
     testImplementation 'junit:junit:4.12'
     implementation(Android.constraintlayout)

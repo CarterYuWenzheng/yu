@@ -17,19 +17,23 @@ import com.carter.baselibrary.utils.ParamUtil
 
 abstract class BaseFragment : Fragment() {
 
-    lateinit var mActivity: AppCompatActivity
+
+    /**
+     * 开放给外部使用
+     */
     lateinit var mContext: Context
-    private var mActivityProvider: ViewModelProvider? = null
-    private var mFragmentProvider: ViewModelProvider? = null
-    private var mDataBindingConfig: DataBindingConfig? = null
+    lateinit var mActivity: AppCompatActivity
+    private var fragmentProvider: ViewModelProvider? = null
+    private var activityProvider: ViewModelProvider? = null
+    private var dataBindingConfig: DataBindingConfig? = null
     private var mBinding: ViewDataBinding? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mContext = context
         mActivity = context as AppCompatActivity
-        //必须在onCreateView之前初始化viewModel，因为onCreateView中需要通过ViewModel和DataBinding绑定
-        //在Attach之后初始化ViewModel，以为Fragment获取的是Activity中的ViewModel
+        // 必须要在Activity与Fragment绑定后，因为如果Fragment可能获取的是Activity中ViewModel
+        // 必须在onCreateView之前初始化viewModel，因为onCreateView中需要通过ViewModel与DataBinding绑定
         initViewModel()
         ParamUtil.initParam(this)
     }
@@ -40,77 +44,129 @@ abstract class BaseFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         getLayoutId()?.let {
-            setStatusBarColor()
+            setStatusColor()
             setSystemInvadeBlack()
-            //获取viewDateBinding
-            val viewDataBinding: ViewDataBinding =
+            //获取ViewDataBinding
+            val binding: ViewDataBinding =
                 DataBindingUtil.inflate(inflater, it, container, false)
-            //viewDataBinding生命周期与Fragment绑定
-            viewDataBinding.lifecycleOwner = viewLifecycleOwner
-            mDataBindingConfig = getDataBindingConfig()
-            mDataBindingConfig?.apply {
+            //将ViewDataBinding生命周期与Fragment绑定
+            binding.lifecycleOwner = viewLifecycleOwner
+            dataBindingConfig = getDataBindingConfig()
+            dataBindingConfig?.apply {
                 val bindingParams = bindingParams
-                //将bindingParams逐个加入到viewDataBinding中的variable
+                // 将bindingParams逐个加入到ViewDataBinding中的Variable
+                // 这一步很重要,否则xml中拿不到variable中内容
                 for (i in 0 until bindingParams.size()) {
-                    viewDataBinding.setVariable(bindingParams.keyAt(i), bindingParams.valueAt(i))
+                    binding.setVariable(bindingParams.keyAt(i), bindingParams.valueAt(i))
                 }
             }
-            mBinding = viewDataBinding
-            return viewDataBinding.root
+            mBinding = binding
+            return binding.root
         }
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initBase(savedInstanceState)
-        //observer在init后，observer会收到粘性事件，对UI处理
-        initObserver()
-        initOnClick()
+        init(savedInstanceState)
+        //observe一定要在初始化最后，因为observe会收到黏性事件，随后对ui做处理
+        observe()
+        onClick()
     }
 
-    open fun initView() {}
+    /**
+     * 初始化viewModel
+     * 之所以没有设计为抽象，是因为部分简单activity可能不需要viewModel
+     * observe同理
+     */
+    open fun initViewModel() {
 
-    open fun initData() {}
-
-    abstract fun initBase(savedInstanceState: Bundle?)
-
-    abstract fun getLayoutId(): Int?
-
-    open fun initViewModel() {}
-
-    open fun initObserver() {}
-
-    open fun initOnClick() {}
+    }
 
     /**
-     * 状态栏背景颜色
+     * 注册观察者
      */
-    open fun setStatusBarColor() {}
+    open fun observe() {
+
+    }
 
     /**
-     *沉浸式状态
+     * 通过activity获取viewModel，跟随activity生命周期
      */
-    open fun setSystemInvadeBlack() {}
-
-    abstract fun getDataBindingConfig(): DataBindingConfig?
-
     protected fun <T : ViewModel?> getActivityViewModel(modelClass: Class<T>): T {
-        if (mActivityProvider == null) {
-            mActivityProvider = ViewModelProvider(this)
+        if (activityProvider == null) {
+            activityProvider = ViewModelProvider(mActivity)
         }
-        return mActivityProvider!!.get(modelClass)
+        return activityProvider!!.get(modelClass)
     }
 
-    protected fun <T : ViewModel?> getFragmentViewModel(modelClass: Class<T>): T {
-        if (mFragmentProvider == null) {
-            mFragmentProvider = ViewModelProvider(this)
+    /**
+     * 通过fragment获取viewModel，跟随fragment生命周期
+     */
+    protected open fun <T : ViewModel?> getFragmentViewModel(modelClass: Class<T>): T {
+        if (fragmentProvider == null) {
+            fragmentProvider = ViewModelProvider(this)
         }
-        return mFragmentProvider!!.get(modelClass)
+        return fragmentProvider!!.get(modelClass)
     }
 
-    protected fun navigation(): NavController {
+    /**
+     * fragment跳转
+     */
+    protected fun nav(): NavController {
         return NavHostFragment.findNavController(this)
     }
+
+    /**
+     * 点击事件
+     */
+    open fun onClick() {
+
+    }
+
+    /**
+     * 设置状态栏背景颜色
+     */
+    open fun setStatusColor() {
+        //StatusUtils.setUseStatusBarColor(mActivity, ColorUtils.parseColor("#00ffffff"))
+    }
+
+    /**
+     * 沉浸式状态
+     */
+    open fun setSystemInvadeBlack() {
+        //第二个参数是是否沉浸,第三个参数是状态栏字体是否为黑色。
+        //StatusUtils.setSystemStatus(mActivity, true, true)
+    }
+
+    /**
+     * 初始化View以及事件
+     */
+    open fun initView() {
+
+    }
+
+    /**
+     * 加载数据
+     */
+    open fun loadData() {
+
+    }
+
+
+    /**
+     * 初始化入口
+     */
+    abstract fun init(savedInstanceState: Bundle?)
+
+    /**
+     * 获取layout布局
+     */
+    abstract fun getLayoutId(): Int?
+
+    /**
+     * 获取dataBinding配置项
+     */
+    abstract fun getDataBindingConfig(): DataBindingConfig?
 
 }

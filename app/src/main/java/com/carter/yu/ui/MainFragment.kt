@@ -2,7 +2,6 @@ package com.carter.yu.ui
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModel
 import com.carter.baselibrary.base.BaseFragment
 import com.carter.baselibrary.base.DataBindingConfig
 import com.carter.baselibrary.common.doSelected
@@ -11,6 +10,7 @@ import com.carter.yu.BR
 import com.carter.yu.PlayViewModel
 import com.carter.yu.R
 import com.carter.yu.constants.Constants
+import com.carter.yu.play.PlayerManager
 import com.carter.yu.ui.main.home.HomeFragment
 import com.carter.yu.ui.main.mine.MineFragment
 import com.carter.yu.ui.main.square.SquareFragment
@@ -22,7 +22,7 @@ import kotlinx.android.synthetic.main.fragment_main.*
  */
 class MainFragment : BaseFragment() {
 
-    private var fragmentList = arrayListOf<Fragment>()
+    private val fragmentList = arrayListOf<Fragment>()
 
     /**
      * 首页
@@ -35,7 +35,7 @@ class MainFragment : BaseFragment() {
     private val projectFragment by lazy {
         TabFragment().apply {
             arguments = Bundle().apply {
-                putInt("type", Constants.PROJECT_TYPE)
+                putInt("type",Constants.PROJECT_TYPE)
             }
         }
     }
@@ -48,27 +48,26 @@ class MainFragment : BaseFragment() {
     /**
      * 公众号
      */
-    private val wxChatFragment by lazy {
+    private val publicNumberFragment by lazy {
         TabFragment().apply {
             arguments = Bundle().apply {
-                putInt("type", Constants.ACCOUNT_TYPE)
+                putInt("type",Constants.ACCOUNT_TYPE)
             }
         }
     }
 
     /**
-     * 我
+     * 我的
      */
     private val mineFragment by lazy { MineFragment() }
-
-    private var playViewModel: ViewModel? = null
+    private var playViewModel: PlayViewModel? = null
 
     init {
         fragmentList.apply {
             add(homeFragment)
             add(projectFragment)
             add(squareFragment)
-            add(wxChatFragment)
+            add(publicNumberFragment)
             add(mineFragment)
         }
     }
@@ -77,7 +76,7 @@ class MainFragment : BaseFragment() {
         playViewModel = getActivityViewModel(PlayViewModel::class.java)
     }
 
-    override fun initBase(savedInstanceState: Bundle?) {
+    override fun init(savedInstanceState: Bundle?) {
         //初始化viewpager2
         vpHome.initFragment(childFragmentManager, fragmentList).run {
             //全部缓存,避免切换回重新加载
@@ -103,24 +102,19 @@ class MainFragment : BaseFragment() {
         }
     }
 
-    override fun initOnClick() {
+    override fun onClick() {
         floatLayout.playClick {
-
+            PlayerManager.instance.controlPlay()
         }
         floatLayout.rootClick {
-
+//            nav().navigate(R.id.action_main_fragment_to_play_fragment)
         }
     }
 
-    override fun getLayoutId(): Int {
-        return R.layout.fragment_main
-    }
+    override fun getLayoutId() = R.layout.fragment_main
 
     override fun getDataBindingConfig(): DataBindingConfig? {
-        return DataBindingConfig(R.layout.fragment_main, playViewModel).addBindingParam(
-            BR.vm,
-            playViewModel
-        )
+        return DataBindingConfig(R.layout.fragment_main, playViewModel)
+            .addBindingParam(BR.vm, playViewModel)
     }
-
 }

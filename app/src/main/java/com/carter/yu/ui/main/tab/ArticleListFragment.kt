@@ -38,7 +38,7 @@ class ArticleListFragment : LazyFragment() {
         articleVM = getFragmentViewModel(ArticleVM::class.java)
     }
 
-    override fun initObserver() {
+    override fun observe() {
         articleVM?.articleLiveData?.observe(this, Observer {
             smartRefresh.smartDismiss()
             loadingTip.dismiss()
@@ -60,7 +60,7 @@ class ArticleListFragment : LazyFragment() {
         type = arguments?.getInt("type") ?: 0
         tabId = arguments?.getInt("tabId") ?: 0
         initView()
-        initData()
+        loadData()
     }
 
     override fun initView() {
@@ -78,7 +78,7 @@ class ArticleListFragment : LazyFragment() {
         adapter.apply {
             rvArticleList.adapter = this
             setOnItemClickListener { i, _ ->
-                navigation().navigate(
+                nav().navigate(
                     R.id.action_main_fragment_to_web_fragment,
                     this@ArticleListFragment.adapter.getBundle(i)
                 )
@@ -97,7 +97,7 @@ class ArticleListFragment : LazyFragment() {
                                 }
                             }
                         } else {
-                            navigation().navigate(R.id.action_main_fragment_to_login_fragment)
+                            nav().navigate(R.id.action_main_fragment_to_login_fragment)
                         }
                     }
                 }
@@ -105,7 +105,7 @@ class ArticleListFragment : LazyFragment() {
         }
     }
 
-    override fun initData() {
+    override fun loadData() {
         articleVM?.getArticleList(type, tabId)
         loadingTip.showLoading()
     }

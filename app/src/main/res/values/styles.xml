@@ -1,0 +1,26 @@
+<resources>
+
+
+    <style name="tabStyle" >
+        <item name="android:textSize">@dimen/text_1</item>
+    </style>
+
+
+    <style name="SplashTheme" parent="AppTheme">
+        <item name="android:windowBackground">@null</item>
+        <item name="android:windowDisablePreview">true</item>
+    </style>
+
+    <style name="SplashTheme_Night" parent="AppTheme_Night">
+        <item name="android:windowBackground">@null</item>
+        <item name="android:windowDisablePreview">true</item>
+    </style>
+
+
+
+    <declare-styleable name="SwipeMenuView">
+        <attr name="swipeEnable" format="boolean" />
+        <attr name="ios" format="boolean" />
+        <attr name="leftSwipe" format="boolean" />
+    </declare-styleable>
+</resources>

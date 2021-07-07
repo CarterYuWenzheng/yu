@@ -20,12 +20,11 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNav
 class TabFragment : LazyFragment() {
 
     /**
-     * fragment类型
+     * fragment 类型
      */
     private var type = 0
 
-    private var tabViewModel: TabViewModel? = null
-
+    private var tabVM: TabViewModel? = null
     override fun lazyInit() {
         arguments?.apply {
             type = getInt("type")
@@ -34,13 +33,17 @@ class TabFragment : LazyFragment() {
     }
 
     override fun initViewModel() {
-        tabViewModel = getFragmentViewModel(TabViewModel::class.java)
+        tabVM = getFragmentViewModel(TabViewModel::class.java)
     }
 
-    override fun initObserver() {
-        tabViewModel?.tabLiveData?.observe(this, Observer {
+    override fun observe() {
+        tabVM?.tabLiveData?.observe(this, Observer {
             initViewPager(it)
         })
+    }
+
+    override fun loadData() {
+        tabVM?.getTab(type)
     }
 
     private fun initViewPager(tabList: MutableList<TabBean>) {
@@ -77,18 +80,9 @@ class TabFragment : LazyFragment() {
         }
     }
 
-    override fun getLayoutId(): Int {
-        return R.layout.fragment_tab
-    }
-
+    override fun getLayoutId() = R.layout.fragment_tab
     override fun getDataBindingConfig(): DataBindingConfig? {
-        return DataBindingConfig(R.layout.fragment_tab, tabViewModel).addBindingParam(
-            BR.vm,
-            tabViewModel
-        )
-    }
-
-    private fun loadData() {
-        tabViewModel?.getTab(type)
+        return DataBindingConfig(R.layout.fragment_tab, tabVM)
+            .addBindingParam(BR.vm, tabVM)
     }
 }
