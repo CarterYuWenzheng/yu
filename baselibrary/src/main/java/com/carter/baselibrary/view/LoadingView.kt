@@ -3,7 +3,10 @@ package com.carter.baselibrary.view
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import android.widget.LinearLayout
 import android.widget.RelativeLayout
+import com.carter.baselibrary.R
+import com.wang.avi.AVLoadingIndicatorView
 import kotlinx.android.synthetic.main.loading_view.view.*
 
 /**
@@ -11,31 +14,36 @@ import kotlinx.android.synthetic.main.loading_view.view.*
  */
 class LoadingView : RelativeLayout {
 
-    constructor(context: Context?) : super(context) {
+    private var llEmpty: LinearLayout? = null
+    private var indicatorView: AVLoadingIndicatorView? = null
+    private var llInternetError: LinearLayout? = null
+
+
+    constructor(context: Context) : super(context) {
         initView(context)
     }
 
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
         initView(context)
     }
 
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
-        context,
-        attrs,
-        defStyleAttr
-    ) {
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
         initView(context)
     }
 
-    private fun initView(context: Context?) {
-        visibility = GONE
+    private fun initView(context: Context) {
+        val view = View.inflate(context, R.layout.loading_view, this)
+        llEmpty = view.findViewById(R.id.llEmpty)
+        indicatorView = view.findViewById(R.id.indicatorView)
+        llInternetError = view.findViewById(R.id.llInternetError)
+        visibility = View.GONE
     }
 
     /**
-     * 网络重连点击事件
+     * 设置网络重连点击事件
      */
-    fun setReloadListener(reload: (View) -> Unit) {
-        ll_internetError.setOnClickListener {
+    fun setReloadListener(reload:(View)->Unit){
+        llInternetError?.setOnClickListener {
             reload.invoke(it)
         }
     }
@@ -44,40 +52,41 @@ class LoadingView : RelativeLayout {
      * 显示空白页
      */
     fun showEmpty() {
-        visibility = VISIBLE
-        ll_internetError.visibility = GONE
-        ll_empty.visibility = VISIBLE
-        indicator_view.visibility = GONE
-        indicator_view.hide()
+        visibility = View.VISIBLE
+        llEmpty?.visibility = View.VISIBLE
+        indicatorView?.visibility = View.GONE
+        indicatorView?.hide()
+        llInternetError?.visibility = View.GONE
     }
 
     /**
      * 显示网络错误
      */
     fun showInternetError() {
-        visibility = VISIBLE
-        ll_internetError.visibility = VISIBLE
-        ll_empty.visibility = GONE
-        indicator_view.visibility = GONE
-        indicator_view.hide()
+        visibility = View.VISIBLE
+        llInternetError?.visibility = View.VISIBLE
+        llEmpty?.visibility = View.GONE
+        indicatorView?.visibility = View.GONE
+        indicatorView?.hide()
     }
 
     /**
-     * 显示loading
+     * 加载
      */
-    fun showLoading() {
-        visibility = VISIBLE
-        ll_internetError.visibility = GONE
-        ll_empty.visibility = GONE
-        indicator_view.visibility = VISIBLE
-        indicator_view.show()
+    fun loading() {
+        visibility = View.VISIBLE
+        indicatorView?.visibility = View.VISIBLE
+        indicatorView?.show()
+        llInternetError?.visibility = View.GONE
+        llEmpty?.visibility = View.GONE
+
     }
 
     /**
-     * 隐藏LoadingView
+     * 隐藏loadingTip
      */
     fun dismiss() {
-        indicator_view.hide()
-        visibility = GONE
+        indicatorView?.hide()
+        visibility = View.GONE
     }
 }
