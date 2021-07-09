@@ -1,60 +1,176 @@
 package com.carter.yu.ui.main.home
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
+import android.widget.ImageView
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.SimpleItemAnimator
+import cn.bingoogolapple.bgabanner.BGABanner
+import com.carter.baselibrary.base.DataBindingConfig
+import com.carter.baselibrary.common.loadUrl
+import com.carter.baselibrary.common.setNoRepeatClick
+import com.carter.baselibrary.common.smartConfig
+import com.carter.baselibrary.common.smartDismiss
+import com.carter.yu.BR
 import com.carter.yu.R
+import com.carter.yu.base.BaseLazyLoadingFragment
+import com.carter.yu.common.ArticleAdapter
+import com.carter.yu.utils.CacheUtil
+import kotlinx.android.synthetic.main.fragment_home.*
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+class HomeFragment : BaseLazyLoadingFragment(), BGABanner.Adapter<ImageView?, String?>,
+    BGABanner.Delegate<ImageView?, String?> {
 
-/**
- * A simple [Fragment] subclass.
- * Use the [HomeFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class HomeFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private var homeVm: HomeVM? = null
+    private var bannerList: MutableList<BannerBean>? = null
+    private val adapter by lazy { ArticleAdapter(mActivity) }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+
+    override fun initViewModel() {
+        homeVm = getActivityViewModel(HomeVM::class.java)
+    }
+
+    override fun observe() {
+        //文章列表
+        homeVm?.articleList?.observe(this, Observer {
+            smartRefresh.smartDismiss()
+            adapter.submitList(it)
+            loadingTip?.dismiss()
+        })
+        //banner
+        homeVm?.banner?.observe(this, Observer {
+            bannerList = it
+            initBanner()
+        })
+        //请求错误
+        homeVm?.errorLiveData?.observe(this, Observer {
+            smartRefresh.smartDismiss()
+        })
+    }
+
+    override fun lazyInit() {
+        initView()
+        loadData()
+    }
+
+    override fun initView() {
+        //关闭更新动画
+        (rvHomeList.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
+        smartRefresh.setOnRefreshListener {
+            homeVm?.getBanner()
+            homeVm?.getArticle()
+        }
+        //上拉加载
+        smartRefresh.setOnLoadMoreListener {
+            homeVm?.loadMoreArticle()
+        }
+        smartRefresh.smartConfig()
+        adapter.apply {
+            rvHomeList.adapter = this
+            setOnItemClickListener { i, _ ->
+                nav().navigate(
+                    R.id.action_main_fragment_to_web_fragment,
+                    this@HomeFragment.adapter.getBundle(i)
+                )
+            }
+            setOnItemChildClickListener { i, view ->
+                when (view.id) {
+                    //收藏
+                    R.id.ivCollect -> {
+                        if (CacheUtil.isLogin()) {
+                            this@HomeFragment.adapter.currentList[i].apply {
+                                //已收藏取消收藏
+                                if (collect) {
+                                    homeVm?.unCollect(id)
+                                } else {
+                                    homeVm?.collect(id)
+                                }
+                            }
+                        } else {
+                            nav().navigate(R.id.action_main_fragment_to_login_fragment)
+                        }
+                    }
+                }
+            }
+        }
+        setNoRepeatClick(ivAdd) {
+            when (it.id) {
+//                R.id.ivAdd -> nav().navigate(R.id.action_main_fragment_to_publish_fragment)
+            }
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false)
+    override fun loadData() {
+        //自动刷新
+        homeVm?.getBanner()
+        homeVm?.getArticle()
+        loadingTip?.loading()
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment HomeFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            HomeFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+    override fun onClick() {
+        setNoRepeatClick(clSearch) {
+            when (it.id) {
+//                R.id.clSearch -> nav().navigate(R.id.action_main_fragment_to_search_fragment)
             }
+        }
     }
+
+    override fun getLayoutId() = R.layout.fragment_home
+
+    override fun getDataBindingConfig(): DataBindingConfig? {
+        return DataBindingConfig(R.layout.fragment_home, homeVm)
+            .addBindingParam(BR.vm, homeVm)
+    }
+
+    /**
+     * 填充banner
+     */
+    override fun fillBannerItem(
+        banner: BGABanner?,
+        itemView: ImageView?,
+        model: String?,
+        position: Int
+    ) {
+        itemView?.apply {
+            scaleType = ImageView.ScaleType.CENTER_CROP
+            loadUrl(mActivity, bannerList?.get(position)?.imagePath!!)
+        }
+    }
+
+    /**
+     * banner点击事件
+     */
+    override fun onBannerItemClick(
+        banner: BGABanner?,
+        itemView: ImageView?,
+        model: String?,
+        position: Int
+    ) {
+        nav().navigate(R.id.action_main_fragment_to_web_fragment, Bundle().apply {
+            bannerList?.get(position)?.let {
+                putString("loadUrl", it.url)
+                putString("title", it.title)
+                putInt("id", it.id)
+            }
+        })
+    }
+
+    /**
+     * 初始化banner
+     */
+    private fun initBanner() {
+        banner.apply {
+            setAutoPlayAble(true)
+            val views: MutableList<View> = ArrayList()
+            bannerList?.forEach { _ ->
+                views.add(ImageView(mActivity).apply {
+                    setBackgroundResource(R.drawable.ripple_bg)
+                })
+            }
+            setAdapter(this@HomeFragment)
+            setDelegate(this@HomeFragment)
+            setData(views)
+        }
+    }
+
 }

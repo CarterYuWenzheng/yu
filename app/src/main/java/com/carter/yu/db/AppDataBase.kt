@@ -45,7 +45,7 @@ abstract class AppDataBase : RoomDatabase() {
 
         private fun buildDataBase(context: Context):AppDataBase{
             return Room
-                .databaseBuilder(context,AppDataBase::class.java,"jet-database")
+                .databaseBuilder(context,AppDataBase::class.java,"yu-database")
                 .addCallback(object :RoomDatabase.Callback(){
                     override fun onCreate(db: SupportSQLiteDatabase) {
                         super.onCreate(db)

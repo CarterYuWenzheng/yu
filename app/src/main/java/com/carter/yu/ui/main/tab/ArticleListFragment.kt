@@ -107,7 +107,7 @@ class ArticleListFragment : LazyFragment() {
 
     override fun loadData() {
         articleVM?.getArticleList(type, tabId)
-        loadingTip.showLoading()
+        loadingTip.loading()
     }
 
     override fun getLayoutId() = R.layout.fragment_article
