@@ -1,3 +1,11 @@
 include ':baselibrary'
+setBinding(new Binding([gradle: this]))
+evaluate(new File(
+  settingsDir,
+  '../flutter_yu/.android/include_flutter.groovy'
+))
 include ':app'
 rootProject.name = "yu"
+
+include ':flutter_yu'
+project(':flutter_yu').projectDir = new File('../flutter_yu')

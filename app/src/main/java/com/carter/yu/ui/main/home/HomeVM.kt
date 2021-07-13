@@ -9,9 +9,7 @@ import com.carter.yu.ui.common.CollectRequest
 import kotlinx.coroutines.async
 
 /**
- * des 首页
- * @date 2020/6/22
- * @author zs
+ * 首页
  */
 class HomeVM : BaseViewModel() {
 
