@@ -5,7 +5,7 @@
     <data>
         <variable
             name="vm"
-            type="com.carter.yu.ui.main.home.HomeVM" />
+            type="com.carter.yu.ui.main.home.HomeViewModel" />
     </data>
 
     <FrameLayout

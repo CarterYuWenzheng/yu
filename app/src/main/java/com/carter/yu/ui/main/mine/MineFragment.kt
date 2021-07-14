@@ -1,60 +1,81 @@
 package com.carter.yu.ui.main.mine
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import com.carter.baselibrary.base.DataBindingConfig
+import com.carter.baselibrary.common.setNoRepeatClick
+import com.carter.yu.BR
 import com.carter.yu.R
+import com.carter.yu.base.LazyFragment
+import io.flutter.embedding.android.FlutterActivity
+import kotlinx.android.synthetic.main.fragment_mine.*
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+class MineFragment : LazyFragment() {
 
-/**
- * A simple [Fragment] subclass.
- * Use the [MineFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class MineFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private var mineVM: MineViewModel? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+    override fun lazyInit() {
+
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_mine, container, false)
+    override fun getLayoutId(): Int {
+        return R.layout.fragment_mine
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment MineFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            MineFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun getDataBindingConfig(): DataBindingConfig? {
+        return DataBindingConfig(R.layout.fragment_mine, mineVM).addBindingParam(BR.vm, mineVM)
+    }
+
+    override fun initViewModel() {
+        mineVM = getFragmentViewModel(MineViewModel::class.java)
+    }
+
+    override fun observe() {
+        super.observe()
+    }
+
+    override fun onClick() {
+        setNoRepeatClick(
+            ivHead,
+            tvName,
+            tvId,
+            llHistory,
+            llRanking,
+            clIntegral,
+            clCollect,
+            clArticle,
+            clWebsite,
+            clSet
+        ) {
+            when (it.id) {
+                //头像
+                R.id.ivHead -> {
+                }
+                //用户名
+                R.id.tvName -> {
+                }
+                //历史
+                R.id.llHistory -> {
+                }
+                //排名
+                R.id.llRanking -> {
+                }
+                //积分
+                R.id.clIntegral -> {
+                }
+                //我的收藏
+                R.id.clCollect -> {
+                }
+                //我的文章
+                R.id.clArticle -> {
+                }
+                //官网
+                R.id.clWebsite -> {
+                }
+                //设置
+                R.id.clSet -> {
+                    startActivity(FlutterActivity.withNewEngine().initialRoute("").build(mContext))
                 }
             }
+        }
     }
 }

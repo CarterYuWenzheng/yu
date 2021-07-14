@@ -11,7 +11,7 @@ import kotlinx.coroutines.async
 /**
  * 首页
  */
-class HomeVM : BaseViewModel() {
+class HomeViewModel : BaseViewModel() {
 
     private val repo by lazy { HomeRepo() }
     private val collectRequest by lazy { CollectRequest(_articleList) }

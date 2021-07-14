@@ -21,29 +21,29 @@ import kotlinx.android.synthetic.main.fragment_home.*
 class HomeFragment : BaseLazyLoadingFragment(), BGABanner.Adapter<ImageView?, String?>,
     BGABanner.Delegate<ImageView?, String?> {
 
-    private var homeVm: HomeVM? = null
+    private var homeViewModel: HomeViewModel? = null
     private var bannerList: MutableList<BannerBean>? = null
     private val adapter by lazy { ArticleAdapter(mActivity) }
 
 
     override fun initViewModel() {
-        homeVm = getActivityViewModel(HomeVM::class.java)
+        homeViewModel = getActivityViewModel(HomeViewModel::class.java)
     }
 
     override fun observe() {
         //文章列表
-        homeVm?.articleList?.observe(this, Observer {
+        homeViewModel?.articleList?.observe(this, Observer {
             smartRefresh.smartDismiss()
             adapter.submitList(it)
             loadingTip?.dismiss()
         })
         //banner
-        homeVm?.banner?.observe(this, Observer {
+        homeViewModel?.banner?.observe(this, Observer {
             bannerList = it
             initBanner()
         })
         //请求错误
-        homeVm?.errorLiveData?.observe(this, Observer {
+        homeViewModel?.errorLiveData?.observe(this, Observer {
             smartRefresh.smartDismiss()
         })
     }
@@ -57,12 +57,12 @@ class HomeFragment : BaseLazyLoadingFragment(), BGABanner.Adapter<ImageView?, St
         //关闭更新动画
         (rvHomeList.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
         smartRefresh.setOnRefreshListener {
-            homeVm?.getBanner()
-            homeVm?.getArticle()
+            homeViewModel?.getBanner()
+            homeViewModel?.getArticle()
         }
         //上拉加载
         smartRefresh.setOnLoadMoreListener {
-            homeVm?.loadMoreArticle()
+            homeViewModel?.loadMoreArticle()
         }
         smartRefresh.smartConfig()
         adapter.apply {
@@ -81,9 +81,9 @@ class HomeFragment : BaseLazyLoadingFragment(), BGABanner.Adapter<ImageView?, St
                             this@HomeFragment.adapter.currentList[i].apply {
                                 //已收藏取消收藏
                                 if (collect) {
-                                    homeVm?.unCollect(id)
+                                    homeViewModel?.unCollect(id)
                                 } else {
-                                    homeVm?.collect(id)
+                                    homeViewModel?.collect(id)
                                 }
                             }
                         } else {
@@ -102,8 +102,8 @@ class HomeFragment : BaseLazyLoadingFragment(), BGABanner.Adapter<ImageView?, St
 
     override fun loadData() {
         //自动刷新
-        homeVm?.getBanner()
-        homeVm?.getArticle()
+        homeViewModel?.getBanner()
+        homeViewModel?.getArticle()
         loadingTip?.loading()
     }
 
@@ -118,8 +118,8 @@ class HomeFragment : BaseLazyLoadingFragment(), BGABanner.Adapter<ImageView?, St
     override fun getLayoutId() = R.layout.fragment_home
 
     override fun getDataBindingConfig(): DataBindingConfig? {
-        return DataBindingConfig(R.layout.fragment_home, homeVm)
-            .addBindingParam(BR.vm, homeVm)
+        return DataBindingConfig(R.layout.fragment_home, homeViewModel)
+            .addBindingParam(BR.vm, homeViewModel)
     }
 
     /**
