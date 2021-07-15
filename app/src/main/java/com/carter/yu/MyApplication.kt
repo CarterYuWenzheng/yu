@@ -7,12 +7,23 @@ import com.scwang.smartrefresh.layout.SmartRefreshLayout
 import com.scwang.smartrefresh.layout.api.RefreshLayout
 import com.scwang.smartrefresh.layout.footer.ClassicsFooter
 import com.scwang.smartrefresh.layout.header.ClassicsHeader
+import io.flutter.embedding.engine.FlutterEngine
+import io.flutter.embedding.engine.FlutterEngineCache
+import io.flutter.embedding.engine.dart.DartExecutor
 
 class MyApplication : BaseApplication() {
+
+    private var  fe:FlutterEngine? =null
+
     override fun onCreate() {
         super.onCreate()
         initSmartHead()
         MultiDex.install(this)
+
+        //Flutter引擎
+        fe = FlutterEngine(this)
+        fe?.dartExecutor?.executeDartEntrypoint(DartExecutor.DartEntrypoint.createDefault())
+        FlutterEngineCache.getInstance().put("cache_engine",fe)
     }
 
     /**
@@ -30,5 +41,10 @@ class MyApplication : BaseApplication() {
                 context
             )
         }
+    }
+
+    override fun onTerminate() {
+        super.onTerminate()
+        fe?.destroy()
     }
 }
