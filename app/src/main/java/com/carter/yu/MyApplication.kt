@@ -22,6 +22,7 @@ class MyApplication : BaseApplication() {
 
         //Flutter引擎
         fe = FlutterEngine(this)
+        fe?.navigationChannel?.setInitialRoute("page2")
         fe?.dartExecutor?.executeDartEntrypoint(DartExecutor.DartEntrypoint.createDefault())
         FlutterEngineCache.getInstance().put("cache_engine",fe)
     }

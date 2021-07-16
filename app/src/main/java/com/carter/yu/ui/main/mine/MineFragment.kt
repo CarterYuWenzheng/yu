@@ -70,7 +70,7 @@ class MineFragment : LazyFragment() {
                 }
                 //官网
                 R.id.clWebsite -> {
-                    startActivity(FlutterActivity.withNewEngine().initialRoute("").build(mContext))
+                    startActivity(FlutterActivity.withNewEngine().initialRoute("page1").build(mContext))
                 }
                 //设置
                 R.id.clSet -> {
